@@ -170,21 +170,10 @@ def setup_args(parser):
         "--dataset", type=str, required=True, help=""
     )
     parser.add_argument(
-        "--dataset_path", type=str, required=True, help=""
-    )
-    parser.add_argument(
         "--image_output_path", type=str, required=True, help=""
     )
     parser.add_argument(
         "--model_ckpt_path", type=str, required=True, help=""
-    )
-    parser.add_argument(
-        "--point_coords", type=float, nargs='+', required=True,
-        help="The coordinate of the point prompt, [coord_W coord_H].",
-    )
-    parser.add_argument(
-        "--point_labels", type=int, nargs='+', required=True,
-        help="The labels of the point prompt, 1 or 0.",
     )
     parser.add_argument(
         "--dilate_kernel_size", type=int, default=None,
@@ -217,7 +206,6 @@ def setup_args(parser):
         default='./pretrained_models/big-lama',
         help="The path to the lama checkpoint.",
     )
-    parser.add_argument("--det_prompt", type=str, required=True, help="text prompt")
     parser.add_argument("--box_threshold", type=float, default=0.3, help="box threshold")
     parser.add_argument("--text_threshold", type=float, default=0.25, help="text threshold")
     parser.add_argument("--config", type=str, required=True, help="path to config file")

@@ -167,21 +167,10 @@ def setup_args(parser):
         "--dataset", type=str, required=True, help=""
     )
     parser.add_argument(
-        "--dataset_path", type=str, required=True, help=""
-    )
-    parser.add_argument(
         "--image_output_path", type=str, required=True, help=""
     )
     parser.add_argument(
         "--model_ckpt_path", type=str, required=True, help=""
-    )
-    parser.add_argument(
-        "--point_coords", type=float, nargs='+', required=True,
-        help="The coordinate of the point prompt, [coord_W coord_H].",
-    )
-    parser.add_argument(
-        "--point_labels", type=int, nargs='+', required=True,
-        help="The labels of the point prompt, 1 or 0.",
     )
     parser.add_argument(
         "--dilate_kernel_size", type=int, default=None,
@@ -214,7 +203,6 @@ def setup_args(parser):
         default='./pretrained_models/big-lama',
         help="The path to the lama checkpoint.",
     )
-    parser.add_argument("--det_prompt", type=str, required=True, help="text prompt")
     parser.add_argument("--box_threshold", type=float, default=0.3, help="box threshold")
     parser.add_argument("--text_threshold", type=float, default=0.25, help="text threshold")
     parser.add_argument("--config", type=str, required=True, help="path to config file")
@@ -252,9 +240,6 @@ if __name__ == "__main__":
     pipe = StableDiffusionInstructPix2PixPipeline.from_pretrained(model_id, torch_dtype=torch.float16, safety_checker=None)
     pipe.to("cuda")
     pipe.scheduler = EulerAncestralDiscreteScheduler.from_config(pipe.scheduler.config)
-
-    if args.dataset == "imagenet":
-        spur_dataset = load_from_disk(args.dataset_path)
 
     wrong_pred_dict = {"img_id": [], "img_filename": [], "caption": [], "class": [], "label": [], "foreground": [], "wp_foreground": [], "background": [], "wp_background": [], "alternate_background": [], "wp_alternate_background": [], "pred_alt_background": [], "pred_rmv_foreground": []}
 
@@ -326,7 +311,7 @@ if __name__ == "__main__":
                     correct_class = num_to_label(dataset['class'][xx])
                 elif args.dataset == "waterbird":
                     correct_class = "water_bird" if dataset['label'][xx] == 0 else "land_bird"
-                elif args.dataset == "waterbird":
+                elif args.dataset == "spuco_dogs":
                     correct_class = "small_dog" if dataset['label'][xx] == 0 else "big_dog"
 
                 boxes_filt, pred_phrases = get_grounding_output(

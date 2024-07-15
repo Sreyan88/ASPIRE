@@ -12,13 +12,51 @@ python image_captioning/caption_images.py \
 -o <output_file_path>
 ```
 
-Each line in the input file should contain path to an image we want to caption.
+Each line in the input file should contain path to an image to be captioned. For example of the format please look at: `examples/example_caption_output.csv`
 
 ## Extracting objects and backgrounds from captions.
 We use the following prompt with GPT-4 to identify forground objects, backgrounds and suggestions for alternate backgrounds for captions generated for images in the above step:
 
 ```
-I will provide you with a list of tuples. Each tuple in the list has 2 items: the first is a caption of an image and the second is the label of the image. For each, you will have to return a JSON with 3 lists. One list should be the list of all phrases from the caption that are objects that appear in the foreground of the image but ignore objects that correspond to the actual label (the label for the phrase might not be present exactly in the caption) (named ’foreground’). The second list should have the single predominant background of the image to the foreground objects (named ’background’). If you do not find a phrase that corresponds to the background, return an empty list for the background. The third is an alternative background for the image, an alternative to the background you suggested earlier (named ’alt’). Here are some examples which also show the format in which you need to return the output. Please just return the JSON in the following format: {"foreground": ["woman", "plaid kilt"], "background": ["forest"], "alt": ["city streets"]}, {"foreground": ["dog", "coke can"], "background": ["bed"], "alt": ["playground"]}  and here is the caption: {caption}. 
+I will provide you with a list of tuples. Each tuple in the list has 2 items: the first is a caption of an image and the second is the label of the image. For each, you will have to return a JSON with 3 lists. One list should be the list of all phrases from the caption that are objects that appear in the foreground of the image but ignore objects that correspond to the actual label (the label for the phrase might not be present exactly in the caption) (named ’foreground’). The second list should have the single predominant background of the image to the foreground objects (named ’background’). If you do not find a phrase that corresponds to the background, return an empty list for the background. The third is an alternative background for the image, an alternative to the background you suggested earlier (named ’alt’). Here are some examples which also show the format in which you need to return the output. Please just return the JSON in the following format: {"foreground": ["woman", "plaid kilt"], "background": ["forest"], "alt": ["city streets"]}, {"foreground": ["dog", "coke can"], "background": ["bed"], "alt": ["playground"]}  and here is the caption: {caption}.
+```
+
+## Spurious Object Detection:
+
+For input file format please check: `examples/example_spurious_object_detection_input.json`.
+
+1. For CelebA dataset:
+```
+python spurious_objects_detection_celeba.py \
+--input_file <path_to_input_file> \
+--dataset <name of dataset - celeba> \
+--image_output_path <path to save modified images> \
+--model_ckpt_path <path to model checkpoint> \
+--dilate_kernel_size 10 \
+--output_dir <path to output> \
+--sam_ckpt <path to SAM model>\
+--seed 42 \
+--lama_config <path to lama_config file> \
+--lama_ckpt <path to lama checkpoint> \
+--grounded_checkpoint <path to grounded checkpoint> \
+--config ../GroundingDINO/groundingdino/config/GroundingDINO_SwinT_OGC.py
+```
+
+2. For other datasets:
+```
+python spurious_objects_detection.py \
+--input_file <path_to_input_file> \
+--dataset <name of dataset - imagenet, waterbird, spuco_dogs> \
+--image_output_path <path to save modified images> \
+--model_ckpt_path <path to model checkpoint> \
+--dilate_kernel_size 10 \
+--output_dir <path to output> \
+--sam_ckpt <path to SAM model>\
+--seed 42 \
+--lama_config <path to lama_config file> \
+--lama_ckpt <path to lama checkpoint> \
+--grounded_checkpoint <path to grounded checkpoint> \
+--config ../GroundingDINO/groundingdino/config/GroundingDINO_SwinT_OGC.py
 ```
 
 ## DFR Training:
@@ -26,30 +64,30 @@ I will provide you with a list of tuples. Each tuple in the list has 2 items: th
 1. For DFR training on only train set:
 ```
 python dfr_evaluate_spurious.py \
-    --data_dir=<path_to_data_dir> \
-    --result_path=<path_to_output_results> \
-    --ckpt_path=<path_to_model_ckpt> \
-    --tune_class_weights_dfr_train
+--data_dir=<path_to_data_dir> \
+--result_path=<path_to_output_results> \
+--ckpt_path=<path_to_model_ckpt> \
+--tune_class_weights_dfr_train
 ```
 
 2. For DFR training on only augmentation set:
 ```
 python dfr_evaluate_spurious_aug_only.py \
-    --data_dir=<path_to_data_dir> \
-    --augset_dir=<path_to_aug_data_dir> \
-    --result_path=<path_to_output_results> \
-    --ckpt_path=<path_to_model_ckpt> \
-    --tune_class_weights_dfr_train
+--data_dir=<path_to_data_dir> \
+--augset_dir=<path_to_aug_data_dir> \
+--result_path=<path_to_output_results> \
+--ckpt_path=<path_to_model_ckpt> \
+--tune_class_weights_dfr_train
 ```
 
 3. For DFR training on train+augmentation set:
 ```
 python dfr_evaluate_spurious_full.py \
-    --data_dir=<path_to_data_dir> \
-    --augset_dir=<path_to_aug_data_dir> \
-    --result_path=<path_to_output_results> \
-    --ckpt_path=<path_to_model_ckpt> \
-    --tune_class_weights_dfr_train
+--data_dir=<path_to_data_dir> \
+--augset_dir=<path_to_aug_data_dir> \
+--result_path=<path_to_output_results> \
+--ckpt_path=<path_to_model_ckpt> \
+--tune_class_weights_dfr_train
 ```
 
 ## 🌻 Acknowledgement  

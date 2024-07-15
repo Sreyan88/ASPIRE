@@ -1,0 +1,30 @@
+[
+    {
+        "img_id": 0,
+        "img_filename": "/examples/img_1.png",
+        "caption": "a woman on a balance beam.",
+        "class": 416,
+        "label": "balance beam",
+        "foreground": [
+            "woman"
+        ],
+        "background": [],
+        "alternate_background": []
+    },
+    {
+        "img_id": 1,
+        "img_filename": "/examples/img_2.png",
+        "caption": "a boy in a snorkel and mask in the water",
+        "class": 801,
+        "label": "snorkel",
+        "foreground": [
+            "boy"
+        ],
+        "background": [
+            "water"
+        ],
+        "alternate_background": [
+            "city streets"
+        ]
+    }
+]
