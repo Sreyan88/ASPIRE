@@ -27,7 +27,7 @@ For input file format please check: `examples/example_spurious_object_detection_
 
 1. For CelebA dataset:
 ```
-python spurious_objects_detection_celeba.py \
+python Grounded-Segment-Anything/Inpaint-Anything/spurious_objects_detection_celeba.py \
 --input_file <path_to_input_file> \
 --dataset <name of dataset - celeba> \
 --image_output_path <path to save modified images> \
@@ -40,11 +40,16 @@ python spurious_objects_detection_celeba.py \
 --lama_ckpt <path to lama checkpoint> \
 --grounded_checkpoint <path to grounded checkpoint> \
 --config ../GroundingDINO/groundingdino/config/GroundingDINO_SwinT_OGC.py
+
+python Grounded-Segment-Anything/Inpaint-Anything/parse_top_k_classes_celeba.py \
+--wrong_preds_jsonl_path <path to output jsonl of the previous command> \
+--spurious_image_saved_path <value of --image_output_path from the previous command> \
+--non_spurious_images_save_path <output path to save non-spurious images>
 ```
 
 2. For other datasets:
 ```
-python spurious_objects_detection.py \
+python Grounded-Segment-Anything/Inpaint-Anything/spurious_objects_detection.py \
 --input_file <path_to_input_file> \
 --dataset <name of dataset - imagenet, waterbird, spuco_dogs> \
 --image_output_path <path to save modified images> \
@@ -57,13 +62,19 @@ python spurious_objects_detection.py \
 --lama_ckpt <path to lama checkpoint> \
 --grounded_checkpoint <path to grounded checkpoint> \
 --config ../GroundingDINO/groundingdino/config/GroundingDINO_SwinT_OGC.py
+
+python Grounded-Segment-Anything/Inpaint-Anything/parse_top_k_classes.py \
+--dataset <name of dataset - imagenet, waterbird, spuco_dogs> \
+--wrong_preds_jsonl_path <path to output jsonl of the previous command> \
+--spurious_image_saved_path <value of --image_output_path from the previous command> \
+--non_spurious_images_save_path <output path to save non-spurious images>
 ```
 
 ## DFR Training:
 
 1. For DFR training on only train set:
 ```
-python dfr_evaluate_spurious.py \
+python deep_feature_reweighting/dfr_evaluate_spurious.py \
 --data_dir=<path_to_data_dir> \
 --result_path=<path_to_output_results> \
 --ckpt_path=<path_to_model_ckpt> \
@@ -72,7 +83,7 @@ python dfr_evaluate_spurious.py \
 
 2. For DFR training on only augmentation set:
 ```
-python dfr_evaluate_spurious_aug_only.py \
+python deep_feature_reweighting/dfr_evaluate_spurious_aug_only.py \
 --data_dir=<path_to_data_dir> \
 --augset_dir=<path_to_aug_data_dir> \
 --result_path=<path_to_output_results> \
@@ -82,7 +93,7 @@ python dfr_evaluate_spurious_aug_only.py \
 
 3. For DFR training on train+augmentation set:
 ```
-python dfr_evaluate_spurious_full.py \
+python deep_feature_reweighting/dfr_evaluate_spurious_full.py \
 --data_dir=<path_to_data_dir> \
 --augset_dir=<path_to_aug_data_dir> \
 --result_path=<path_to_output_results> \
