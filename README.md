@@ -70,6 +70,23 @@ python Grounded-Segment-Anything/Inpaint-Anything/parse_top_k_classes.py \
 --non_spurious_images_save_path <output path to save non-spurious images>
 ```
 
+## Diffusion Fine-tuning and Augmentation
+1. Finetuning diffusion model with non-spurious images.
+```
+cd diffusion_generation/
+
+sh transcribe.sh
+```
+
+Before running the above script please fill in the values for args: `dataset, train_data_dir` and `output_dir`.
+
+2. Image generation from fine-tuned models:
+```
+python diffusion_generation/generate_images.py \
+--model_ckpt <path to finetuned model ckpt> \
+--out <path to output folder> \
+```
+
 ## DFR Training:
 
 1. For DFR training on only train set:

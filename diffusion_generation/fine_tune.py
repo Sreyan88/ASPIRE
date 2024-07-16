@@ -264,7 +264,7 @@ def parse_args():
 
     parser.add_argument("--erase-concepts", action="store_true", 
                         help="erase text inversion concepts first")
-
+    parser.add_argument("--train_data_dir", type=str, required=True)
     args = parser.parse_args()
     env_local_rank = int(os.environ.get("LOCAL_RANK", -1))
     if env_local_rank != -1 and env_local_rank != args.local_rank:
@@ -749,6 +749,8 @@ if __name__ == "__main__":
     options = np.array(list(options))
     options = np.array_split(options, world_size)[rank]
 
+    const_train_path = args.train_data_dir
+
     for seed, examples_per_class in options.tolist():
 
     #     os.makedirs(os.path.join(output_dir, "extracted"), exist_ok=True)
@@ -770,7 +772,7 @@ if __name__ == "__main__":
 
     #         image.save(path)
 
-        for class_name in os.listdir("/home/sreyang/scratch.ramanid-prj/acm/Grounded-Segment-Anything/Inpaint-Anything/wrong_preds/non_spur_spuco_v3"):
+        for class_name in os.listdir(args.train_data_dir):
 
             # if class_name == "waterbird":
             #     class_name = "water_birds"
@@ -788,16 +790,16 @@ if __name__ == "__main__":
             args.placeholder_token = f"<{formatted_name}>"
             args.initializer_token = "the"
 
-            args.train_data_dir = os.path.join("/home/sreyang/scratch.ramanid-prj/acm/Grounded-Segment-Anything/Inpaint-Anything/wrong_preds/non_spur_spuco_v3",formatted_name)
+            args.train_data_dir = os.path.join(const_train_path, formatted_name)
 
             args.output_dir = os.path.join(output_dir, "fine-tuned_spurdog", dirname)
 
             word_name = class_name.replace(" ", "")
 
-            if args.erase_concepts: args.unet_ckpt = (
-                    "/projects/rsalakhugroup/btrabucc/esd-models/" + 
-                    f"compvis-word_{word_name}-method_full-sg_3-ng_1-iter_1000-lr_1e-05/" + 
-                    f"diffusers-word_{word_name}-method_full-sg_3-ng_1-iter_1000-lr_1e-05.pt")
+            # if args.erase_concepts: args.unet_ckpt = (
+            #         "/projects/rsalakhugroup/btrabucc/esd-models/" + 
+            #         f"compvis-word_{word_name}-method_full-sg_3-ng_1-iter_1000-lr_1e-05/" + 
+            #         f"diffusers-word_{word_name}-method_full-sg_3-ng_1-iter_1000-lr_1e-05.pt")
 
             main(args)
 

@@ -105,9 +105,34 @@ merged_df["object"] = merged_df["object"].apply(lambda obj: obj.replace("-", " "
 pivot_table = merged_df.groupby(["class", "object"]).size().unstack(fill_value=0)
 
 labels_dict = {
-    0: "landbird",
-    1 : "waterbird"
+    "imagenet": {
+        537: "dog_sled",
+        379: "howler_monkey",
+        785: "seat_belt",
+        795: "ski",
+        837: "sunglasses",
+        433: "swimming_cap",
+        416: "balance_beam",
+        602: "horizontal_bar",
+        706: "patio",
+        746: "puck",
+        655: "miniskirt",
+        810: "space_bar",
+        890: "volleyball",
+        981: "baseball_player",
+        801: "snorkel"
+    },
+    "waterbird": {
+        0: "landbird",
+        1 : "waterbird"
+    },
+    "spuco_dogs": {
+        0: "smalldog",
+        1 : "bigdog"
+    }
 }
+
+labels_dict = labels_dict[args.dataset]
 
 class_top_k_dict = {}
 

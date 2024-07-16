@@ -22,15 +22,13 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser("Stable Diffusion inference script")
 
-    parser.add_argument("--model-path", type=str, default="CompVis/stable-diffusion-v1-4")
-    parser.add_argument("--embed-path", type=str, default=(
-        "/home/sreyang/scratch.ramanid-prj/da-fusion/fine-tuned_bird/imagenet-3-50/blonde/learned_embeds.bin"))
+    parser.add_argument("--model_ckpt", type=str, required=True)
     
-    parser.add_argument("--seed", type=int, default=0)
+    parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--num-generate", type=int, default=50)
 
     parser.add_argument("--prompt", type=str, default="a photo of a <patio>")
-    parser.add_argument("--out", type=str, default="/home/sreyang/scratch.ramanid-prj/da-fusion/imagenet_final/patio/")
+    parser.add_argument("--out", type=str, required=True)
 
     parser.add_argument("--guidance-scale", type=float, default=7.5)
     parser.add_argument("--erasure-ckpt-name", type=str, default=DEFAULT_ERASURE_CKPT)
@@ -39,24 +37,21 @@ if __name__ == "__main__":
 
     os.makedirs(args.out, exist_ok=True)
 
-    # torch.manual_seed(args.seed)
-    # np.random.seed(args.seed)
-    # random.seed(args.seed)
+    const_out = args.out
 
-    for dir_ckpt in os.listdir("/home/sreyang/scratch.ramanid-prj/da-fusion/fine-tuned_spurdog/"):
+    for dir_ckpt in os.listdir(args.model_ckpt):
 
-        for clas in os.listdir("/home/sreyang/scratch.ramanid-prj/da-fusion/fine-tuned_spurdog/" + dir_ckpt):
+        for clas in os.listdir(os.path.join(args.model_ckpt, dir_ckpt)):
 
             args.prompt = "a photo of a " + "<" + clas + ">"
-            args.out = "/home/sreyang/scratch.ramanid-prj/da-fusion/spucodogs_final/" + clas + "/"
+            args.out = os.path.join(const_out, clas) + "/"
 
             if os.path.isdir(args.out):
                 pass
             else:
                 os.mkdir(args.out)
 
-            # for clas in in os.listdir("/home/sreyang/scratch.ramanid-prj/da-fusion/fine-tuned_spurimg/"):
-            args.embed_path = "/home/sreyang/scratch.ramanid-prj/da-fusion/fine-tuned_spurdog/" + dir_ckpt + "/" + clas + "/learned_embeds.bin"
+            args.embed_path = args.model_ckpt + dir_ckpt + "/" + clas + "/learned_embeds.bin"
 
             pipe = StableDiffusionPipeline.from_pretrained(
                 args.model_path, use_auth_token=True,
@@ -70,10 +65,6 @@ if __name__ == "__main__":
 
             pipe.set_progress_bar_config(disable=True)
             pipe.safety_checker = None
-
-            # if args.erasure_ckpt_name is not None:
-            #     pipe.unet.load_state_dict(torch.load(
-            #         args.erasure_ckpt_name, map_location='cuda'))
 
             ckpt_num = dir_ckpt.split("-")[1]
             for idx in trange(100, 
