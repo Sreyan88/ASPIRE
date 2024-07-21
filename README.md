@@ -88,8 +88,9 @@ python diffusion_generation/generate_images.py \
 ```
 
 ## DFR Training:
+This involves a two step training:
 
-1. For DFR training on only train set:
+1. Train only on the train set:
 ```
 python deep_feature_reweighting/dfr_evaluate_spurious.py \
 --data_dir=<path_to_data_dir> \
@@ -98,17 +99,7 @@ python deep_feature_reweighting/dfr_evaluate_spurious.py \
 --tune_class_weights_dfr_train
 ```
 
-2. For DFR training on only augmentation set:
-```
-python deep_feature_reweighting/dfr_evaluate_spurious_aug_only.py \
---data_dir=<path_to_data_dir> \
---augset_dir=<path_to_aug_data_dir> \
---result_path=<path_to_output_results> \
---ckpt_path=<path_to_model_ckpt> \
---tune_class_weights_dfr_train
-```
-
-3. For DFR training on train+augmentation set:
+2. Train on holdout + augmented set:
 ```
 python deep_feature_reweighting/dfr_evaluate_spurious_full.py \
 --data_dir=<path_to_data_dir> \
@@ -116,6 +107,33 @@ python deep_feature_reweighting/dfr_evaluate_spurious_full.py \
 --result_path=<path_to_output_results> \
 --ckpt_path=<path_to_model_ckpt> \
 --tune_class_weights_dfr_train
+```
+
+## ERM Training:
+
+```
+#Imagenet
+python deep_feature_reweighting/train_classifier_hard_imagenet.py \
+--output_dir=<OUTPUT_DIR> \
+--pretrained_model \
+--num_epochs=<NUM_EPOCHS> \
+--batch_size=<BATCH_SIZE> \
+--init_lr=<LR> \
+--data_dir=<TRAIN_DATASET_DIR>\
+--test_wb_dir=<TEST_DATASET_DIR> \
+--seed=<SEED>
+
+#Other datasets
+python deep_feature_reweighting/train_classifier.py \
+--output_dir=<OUTPUT_DIR> \
+--pretrained_model \
+--num_epochs=100 \
+--weight_decay=1e-3 \
+--batch_size=<BATCH_SIZE> \
+--init_lr=<LR> \
+--data_dir=<TRAIN_DATASET_DIR>\
+--test_wb_dir=<TEST_DATASET_DIR> \
+--seed=<SEED>
 ```
 
 ## 🌻 Acknowledgement  
